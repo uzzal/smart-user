@@ -131,9 +131,14 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void update(User user) {
+    if(logger.isInfoEnabled()){
+      logger.info("Start updating user: " + user.getUsername());
+    }
     if (user.getId() == null) {
       throw new IllegalArgumentException("ID of user not set to be updated!");
     }
+//    user.setRoles(getById(user.getId()).getRoles());
+//    user.setPrivileges(getById(user.getId()).getPrivileges());
     final Date date = new Date();
     user.setLastModifiedDate(date);
     validateUser(user);
@@ -141,6 +146,7 @@ public class UserServiceImpl implements UserService {
     if (oldUser == null) {
       throw new IllegalArgumentException("Trying to update non-existent user!");
     }
+    user.setCreationDate(oldUser.getCreationDate());
     try {
       if (!user.getUsername().equals(oldUser.getUsername())) {
         final UniqueKey oldIndexKey = getUniqueKeyOfIndexForUser(oldUser);

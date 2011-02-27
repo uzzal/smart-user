@@ -132,8 +132,12 @@ public class ComprehensiveClientTest {
     jettyServer.stop();
   }
 
+  private RootResource login(String username, String password) {
+    return RootResourceImpl.getInstance(username, password);
+  }
+
   @Test
-  public void testBootstraping() throws InterruptedException{
+  public void testBootstraping() throws InterruptedException {
     Thread.sleep(4000);
     rootResource = login(USERNAME, PASSWORD);
     Assert.assertNotNull(rootResource);
@@ -145,7 +149,8 @@ public class ComprehensiveClientTest {
     Assert.assertNotNull(orgResource);
     orgsResource = loginResource.getOrganizationsResource();
     Assert.assertNotNull(orgsResource);
-    System.out.println("---------------------------------------------------------------------------------Organization resource5 " + orgsResource.getLastReadStateOfEntity().getEntries().size());
+    System.out.println("---------------------------------------------------------------------------------Organization resource5 " + orgsResource.
+        getLastReadStateOfEntity().getEntries().size());
     Assert.assertEquals(ORGANIZATION_NUM_AT_BEGINNING, orgsResource.getOrganizationResources().size());
     UserResource userResource = loginResource.getUserResource();
     Assert.assertNotNull(userResource);
@@ -162,7 +167,8 @@ public class ComprehensiveClientTest {
 //Test Started by Uzzal
   @Test
   public void doTestCreateOrganization() throws InterruptedException {
-    System.out.println("---------------------------------------------------------------------------------Organization resource4 " + orgsResource.getLastReadStateOfEntity().getEntries().size());    
+    System.out.println("---------------------------------------------------------------------------------Organization resource4 " + orgsResource.
+        getLastReadStateOfEntity().getEntries().size());
     Assert.assertNotNull(orgsResource);
     Organization org = new Organization();
     org.setName(SITEL_ORG_NAME);
@@ -175,26 +181,29 @@ public class ComprehensiveClientTest {
     address.setZip("1207");
     org.setAddress(address);
     OrganizationResource newOrgResource = null;
-    System.out.println("---------------------------------------------------------------------------------Organization resource3 " + orgsResource.getLastReadStateOfEntity().getEntries().size());
+    System.out.println("---------------------------------------------------------------------------------Organization resource3 " + orgsResource.
+        getLastReadStateOfEntity().getEntries().size());
     try {
       newOrgResource = orgsResource.create(org);
       Thread.sleep(1500);
-      
+
       System.out.println("Organization created");
     }
     catch (Exception e) {
       Assert.fail("Failed to create new organization");
     }
-    System.out.println("---------------------------------------------------------------------------------Organization resource2 " + orgsResource.getLastReadStateOfEntity().getEntries().size());
+    System.out.println("---------------------------------------------------------------------------------Organization resource2 " + orgsResource.
+        getLastReadStateOfEntity().getEntries().size());
     sitelOrgResource = newOrgResource;
     Assert.assertNotNull(newOrgResource);
     com.smartitengineering.user.client.api.Organization newlyCreatedOrg = newOrgResource.getOrganization();
     Assert.assertEquals(org.getName(), newlyCreatedOrg.getName());
 
-    System.out.println("---------------------------------------------------------------------------------Organization resource1 " + orgsResource.getLastReadStateOfEntity().getEntries().size());
-    
+    System.out.println("---------------------------------------------------------------------------------Organization resource1 " + orgsResource.
+        getLastReadStateOfEntity().getEntries().size());
+
     Assert.assertEquals(ORGANIZATION_NUM_AT_BEGINNING, orgsResource.getOrganizationResources().size());
-    try {      
+    try {
       orgsResource.get();
       Assert.assertEquals(ORGANIZATION_NUM_AT_BEGINNING + 1, orgsResource.getOrganizationResources().size());
     }
@@ -224,7 +233,7 @@ public class ComprehensiveClientTest {
     Assert.assertEquals(org1.getName(), newlyCreatedOrg1.getName());
     Assert.assertEquals(ORGANIZATION_NUM_AT_BEGINNING + 1, orgsResource.getOrganizationResources().size());
     try {
-      
+
       orgsResource.get();
       Assert.assertEquals(org1.getName(), newlyCreatedOrg1.getName());
       Assert.assertEquals(ORGANIZATION_NUM_AT_BEGINNING + 2, orgsResource.getOrganizationResources().size());
@@ -234,6 +243,7 @@ public class ComprehensiveClientTest {
     }
 
   }
+
 
   @Test
   public void doTestUpdateOrganization() throws InterruptedException {
@@ -248,27 +258,29 @@ public class ComprehensiveClientTest {
         Assert.assertFalse(CHITTAGONG.equals(organization.getAddress().getCity()));
         organization.getAddress().setCity(CHITTAGONG);
         try {
-          orgIterResource.update();          
+          orgIterResource.update();
         }
         catch (Exception e) {
           Assert.fail("Exception due to failure of updating particular orgnization");
         }
         try {
-          organization = orgIterResource.getOrganization();
+          orgIterResource.get();
+          organization = orgIterResource.getOrganizationReloaded();
           Assert.assertEquals(CHITTAGONG, organization.getAddress().getCity());
         }
         catch (Exception e) {
           Assert.fail("Expected city doesn't match with the actual");
         }
       }
-    }    
+    }
   }
+  
 
   @Test
   public void doInitialTest() throws InterruptedException {
     LOGGER.info("starting getting user resource");
     sitelUsersResource = sitelOrgResource.getUsersResource();
-      LOGGER.info("the total number users: " + sitelUsersResource.getUserResources().size());
+    LOGGER.info("the total number users: " + sitelUsersResource.getUserResources().size());
     List<UserResource> userResources = sitelUsersResource.getUserResources();
     Assert.assertNotNull(orgsResource);
     Assert.assertEquals(ORGANIZATION_NUM_AT_BEGINNING + 2, orgsResource.getOrganizationResources().size());
@@ -319,8 +331,8 @@ public class ComprehensiveClientTest {
     userPerson.setPerson(person);
     userResource = sitelUsersResource.create(userPerson);
     Thread.sleep(1500);
-    sitelUserResource = userResource;
-    Assert.assertEquals(SITEL_ORG_USER_USERNAME, userResource.getUser().getUser().getUsername());
+    sitelUserResource = userResource;    
+    Assert.assertEquals(SITEL_ORG_USER_USERNAME, userResource.getUserReloaded().getUser().getUsername());
 
 
     OrganizationResource organizationResource = sitelUserResource.getOrganizationResource();
@@ -329,7 +341,8 @@ public class ComprehensiveClientTest {
         getOrganization().getUniqueShortName()));
 
 
-  }
+  }  
+  
 
   @Test
   public void doTestCreateAnotherUser() {
@@ -366,7 +379,7 @@ public class ComprehensiveClientTest {
     catch (Exception e) {
       Assert.fail("Exception due to failure of creating an userperson");
     }
-    Assert.assertEquals("russel", userResource.getUser().getUser().getUsername());
+    Assert.assertEquals("russel", userResource.getUserReloaded().getUser().getUsername());
   }
   //  @Test
   //  public void doUserAuthentication() {
@@ -381,7 +394,7 @@ public class ComprehensiveClientTest {
   //  }
 
   @Test
-  public void doTestUpdateUser() {
+  public void doTestUpdateUser() throws InterruptedException {
     try {
       Thread.sleep(1500);
       sitelUsersResource = sitelOrgResource.getUsersResource();
@@ -414,17 +427,24 @@ public class ComprehensiveClientTest {
         userPerson.getPerson().getAddress().setZip("1261");
         try {
           userIterResource.update();
-          Thread.sleep(3500);
+          Thread.sleep(5000);
         }
         catch (Exception e) {
           Assert.fail("Exception due to failure of updating particular user information");
-        }
-        try {
-          userPerson = userIterResource.getUser();
-        }
-        catch (Exception e) {
-          Assert.fail("Exception due to not getting the user");
-        }
+        }        
+      }
+    }
+    try {      
+      sitelUsersResource = sitelOrgResource.getUsersResource();
+      Assert.assertNotNull(sitelUsersResource);
+      Assert.assertEquals(USER_NUM_AT_BEGINNING + 2, sitelUsersResource.getUserResources().size());
+    }
+    catch (Exception e) {
+      Assert.fail("Expected number of users doesn't match with the actual");
+    }
+    for (UserResource userIterResource : sitelUsersResource.getUserResources()) {
+      if (userIterResource.getUser().getUser().getUsername().equals("modhu")) {
+        UserPerson userPerson = (UserPerson) userIterResource.getUser();
         Assert.assertEquals("123modhu", userPerson.getUser().getPassword());
         Assert.assertEquals("Subrata", userPerson.getPerson().getSelf().getName().getFirstName());
         Assert.assertEquals("Gupta", userPerson.getPerson().getSelf().getName().getLastName());
@@ -433,10 +453,36 @@ public class ComprehensiveClientTest {
         Assert.assertEquals("1261", userPerson.getPerson().getAddress().getZip());
       }
     }
+    System.out.println("end of do test update user");
+  }
+
+  @Test
+  public void doTestUserUpdateSelf() throws InterruptedException {
+    System.out.println("starting do test update user self");
+
+    RootResource modhuRootResource = login("modhu@SITEL", "123modhu");
+    LoginResource modhuLoginResource = modhuRootResource.getLoginResource();
+    UserResource userResource = modhuLoginResource.getUserResource();
+    User user = (User) userResource.getUser().getUser();
+    Assert.assertEquals(user.getUsername(), "modhu");
+    userResource.getUser().getUser().setPassword("modhu123updated");
+    try {
+      userResource.update();
+    }
+    catch (Exception e) {
+      Assert.fail("Should not throw any exception");
+    }
+    Thread.sleep(7000);
+
+    modhuRootResource = login("modhu@SITEL", "modhu123updated");
+    UserResource updatedUserResource = modhuRootResource.getLoginResource().getUserResource();
+    Assert.assertEquals("modhu123updated", updatedUserResource.getUser().getUser().getPassword());
+    System.out.println("end of do test update user self");
   }
 
   @Test
   public void doTestCreatePrivilegesofOrganization() {
+    System.out.println("starting do test create privileges of organization");
     try {
       sitelPrivsResource = sitelOrgResource.getPrivilegesResource();
       Assert.assertNotNull(sitelPrivsResource);
@@ -520,7 +566,8 @@ public class ComprehensiveClientTest {
     }
     sitelUserPrivsResource.get();
     privilegeUser = (Privilege) privilegeResource.getPrivilege();
-    Assert.assertEquals(USER_PRIVILEGES_NUM_AT_BEGINNING + 1, sitelUserPrivsResource.getUserPrivilegeResources().size());
+    Assert.assertEquals(USER_PRIVILEGES_NUM_AT_BEGINNING + 1,
+                        sitelUserPrivsResource.getUserPrivilegeResources().size());
     Assert.assertEquals("Admin User Profile Privilege", privilegeUser.getDisplayName());
     Assert.assertEquals(USERS_OID, privilegeUser.getSecuredObject().getObjectID());
   }
@@ -680,13 +727,13 @@ public class ComprehensiveClientTest {
     sitelUserGroupRolesResource.get();
     Assert.assertEquals(0, sitelUserGroupRolesResource.getUserGroupRoleResources().size());
   }
-
 //  @Test
 //  public void doTestAuthorization() {
 //    doTestAuthoriztionForAdminUser();
 //    doTestAuthorizationForUser();
 //    doTestAuthorizationForUserGroup();
 //  }
+
   @Test
   public void doTestAuthoriztionForAdminUser() {
     sitelAdminRootResource = login("admin@SITEL", "adminadmin");
@@ -781,8 +828,7 @@ public class ComprehensiveClientTest {
   }
 
   @Test
-  public void doTestAuthorizationForUser() throws InterruptedException
-  {
+  public void doTestAuthorizationForUser() throws InterruptedException {
     Thread.sleep(3400);
     RootResource saumitraRootResource = login("saumitra@SITEL", "saumitra123");
     verifyAdminPrivilege(saumitraRootResource);
@@ -836,7 +882,7 @@ public class ComprehensiveClientTest {
 
   @Test
   public void doTestAuthorizationForUserGroup() {
-    RootResource modhuRootResource = login("modhu@SITEL", "modhu123");
+    RootResource modhuRootResource = login("modhu@SITEL", "modhu123updated");
     verifyAdminPrivilege(modhuRootResource);
   }
 
@@ -935,10 +981,6 @@ public class ComprehensiveClientTest {
       Assert.fail("Should not throw any exception");
     }
 
-  }
-
-  private RootResource login(String username, String password) {
-    return RootResourceImpl.getInstance(username, password);
-  }
+  }  
   //Test Ended by Uzzal {
 }
