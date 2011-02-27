@@ -4,13 +4,14 @@
  */
 package com.smartitengineering.user.client.api;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  *
  * @author modhu7
  */
-public interface User {
+public interface User extends Serializable{
 
   public String getUsername();
 
