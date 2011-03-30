@@ -157,11 +157,8 @@ public class ComprehensiveClientTest {
     UserRolesResource userRolesResource = userResource.getRolesResource();
     Assert.assertNotNull(userRolesResource);
     Assert.assertNotNull(userRolesResource.getUserRoleResources());
-    Assert.assertEquals(1, userRolesResource.getUserRoleResources().size());
-    Assert.assertEquals(userRolesResource.getUserRoleResources().get(0).getRoleResource().getRole().getName(), GlobalRole.ROLE_ADMIN.
-        toString());
-
-
+    Assert.assertEquals(2, userRolesResource.getUserRoleResources().size());
+    
   }
 
 //Test Started by Uzzal

@@ -5,6 +5,7 @@
 package com.smartitengineering.user.service.impl;
 
 import com.smartitengineering.domain.PersistentDTO;
+import com.smartitengineering.user.domain.GlobalRole;
 import com.smartitengineering.user.domain.Organization;
 import com.smartitengineering.user.domain.Person;
 import com.smartitengineering.user.domain.Privilege;
@@ -19,6 +20,7 @@ import com.smartitengineering.user.parser.SmartUserStrings;
 import com.smartitengineering.user.service.OrganizationService;
 import com.smartitengineering.user.service.PersonService;
 import com.smartitengineering.user.service.PrivilegeService;
+import com.smartitengineering.user.service.RoleService;
 import com.smartitengineering.user.service.SecuredObjectService;
 import com.smartitengineering.user.service.Services;
 import com.smartitengineering.user.service.UserGroupService;
@@ -81,6 +83,10 @@ public class ObserverImpl implements CRUDObserver {
 
   public UserService getUserService() {
     return Services.getInstance().getUserService();
+  }
+
+  public RoleService getRoleService(){
+    return Services.getInstance().getRoleService();
   }
 
   @Override
@@ -240,6 +246,11 @@ public class ObserverImpl implements CRUDObserver {
     privileges.add(privilegeUser);
     User user = persistentUserPerson.getUser();
     user.setPrivileges(privileges);
+
+    Role readRole = getRoleService().getRoleByName(GlobalRole.ROLE_READ.name());
+    Set<Role> roles = userPerson.getUser().getRoles();
+    roles.add(readRole);
+    user.setRoles(roles);
     getUserService().update(user);
   }
 
