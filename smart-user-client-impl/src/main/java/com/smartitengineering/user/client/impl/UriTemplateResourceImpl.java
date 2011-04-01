@@ -50,31 +50,34 @@ public class UriTemplateResourceImpl extends AbstractClientResource<OpenSearchDe
   }
 
   @Override
-  public OrganizationResource getOrganizationForUniqueShortName(String uniqueShortName) {
-    OpenSearchDescriptor descriptor = getLastReadStateOfEntity();
-    for (Url url : descriptor.getUrls()) {
-      for (Rel rel : url.getRels()) {
-        if ("org".equals(rel.getValue())) {
-          String urlStr = url.getTemplate();
-          urlStr = urlStr.replace("{uniqueShortName}", uniqueShortName);
-          ResourceLink link = ClientUtil.createResourceLink(rel.getValue(), URI.create(urlStr), url.getType());
-          return new OrganizationResourceImpl(link, this);
-        }
-      }
+  public OrganizationResource getOrganizationForUniqueShortName(String templateVal) {
+    ResourceLink link = getResourceLink("org", "{uniqueShortName}", templateVal);
+    if (link != null) {
+      return new OrganizationResourceImpl(link, this);
+    }
+    return null;
+
+  }
+
+  @Override
+  public RoleResource getRoleResourceForRoleName(String templateVal) {
+    ResourceLink link = getResourceLink("role", "{roleName}", templateVal);
+    if (link != null) {
+      return new RoleResourceImpl(link, this);
     }
     return null;
   }
 
-  @Override
-  public RoleResource getRoleResourceForRoleName(String roleName) {
+  public ResourceLink getResourceLink(String relValue, String templateString, String templateVal) {
     OpenSearchDescriptor descriptor = getLastReadStateOfEntity();
+    Url urlTemplate = null;
     for (Url url : descriptor.getUrls()) {
       for (Rel rel : url.getRels()) {
-        if ("role".equals(rel.getValue())) {
-          String urlStr = url.getTemplate();
-          urlStr = urlStr.replace("{roleName}", roleName);
-          ResourceLink link = ClientUtil.createResourceLink(rel.getValue(), URI.create(urlStr), url.getType());
-          return new RoleResourceImpl(link, this);
+        if (relValue.equals(rel.getValue())) {
+          String urlStr = urlTemplate.getTemplate();
+          urlStr = urlStr.replace(templateString, templateVal);
+          ResourceLink link = ClientUtil.createResourceLink(relValue, URI.create(urlStr), urlTemplate.getType());
+          return link;
         }
       }
     }
