@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 public class UriTemplatesResource extends AbstractResource {
 
   protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+  private final static String REL_ORG = "org";
+  private final static String REL_ROLE = "role";
 
   public UriTemplatesResource(ServerResourceInjectables injectables) {
     super(injectables);
@@ -40,14 +42,14 @@ public class UriTemplatesResource extends AbstractResource {
     if (logger.isInfoEnabled()) {
       logger.info("Organization Template URL: " + orgUrlTemplate);
     }
-    UrlBuilder orgBuilder = UrlBuilder.getBuilder().rel(RelEnum.COLLECTION).template(orgUrlTemplate).type(
+    UrlBuilder orgBuilder = UrlBuilder.getBuilder().rel(REL_ORG).template(orgUrlTemplate).type(
         javax.ws.rs.core.MediaType.APPLICATION_ATOM_XML);
     templateBuilder = getRoleUri();
     final String roleUrlTemplate = templateBuilder.toString();
     if (logger.isInfoEnabled()) {
       logger.info("Role Template URL: " + roleUrlTemplate);
     }
-    UrlBuilder roleBuilder = UrlBuilder.getBuilder().rel(RelEnum.COLLECTION).template(roleUrlTemplate).
+    UrlBuilder roleBuilder = UrlBuilder.getBuilder().rel(REL_ROLE).template(roleUrlTemplate).
         type(javax.ws.rs.core.MediaType.APPLICATION_ATOM_XML);
     descBuilder.urls(orgBuilder.build(), roleBuilder.build());
     ResponseBuilder builder = Response.ok(descBuilder.build());
