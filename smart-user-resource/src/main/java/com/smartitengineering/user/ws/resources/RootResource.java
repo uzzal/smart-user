@@ -24,6 +24,7 @@ import org.apache.abdera.model.Link;
 @Path("/")
 public class RootResource extends AbstractResource {
 
+  public static final String TEMPLATES = "templates";
   private static final Date INIT_DATE = new Date();
 
   @GET
@@ -32,22 +33,24 @@ public class RootResource extends AbstractResource {
     ResponseBuilder responseBuilder = Response.ok();
     Feed atomFeed = getFeed("Smart User", INIT_DATE);
 
-    Link loginLink = Abdera.getNewFactory().newLink();    
+    Link loginLink = Abdera.getNewFactory().newLink();
     loginLink.setHref(getRelativeURIBuilder().path(LoginResource.class).build().toString());
     loginLink.setRel("Login");
     atomFeed.addLink(loginLink);
-    Link organizationsLink = Abdera.getNewFactory().newLink();    
+    Link organizationsLink = Abdera.getNewFactory().newLink();
     organizationsLink.setHref(getRelativeURIBuilder().path(OrganizationsResource.class).build().toString());
     organizationsLink.setRel("Organizations");
     atomFeed.addLink(organizationsLink);
+    atomFeed.addLink(
+        getLink(getRelativeURIBuilder().path(TEMPLATES).build(), TEMPLATES,
+                com.smartitengineering.util.opensearch.jaxrs.MediaType.APPLICATION_OPENSEARCHDESCRIPTION_XML));
     responseBuilder.entity(atomFeed);
     return responseBuilder.build();
   }
 
   @GET
   @Produces(MediaType.TEXT_HTML)
-  public Response getHtml()
-  {
+  public Response getHtml() {
     ResponseBuilder responseBuilder = Response.ok();
 
 
@@ -55,6 +58,11 @@ public class RootResource extends AbstractResource {
 
     responseBuilder.entity(view);
     return responseBuilder.build();
+  }
+
+  @Path(TEMPLATES)
+  public UriTemplatesResource getUriTemplates() {
+    return new UriTemplatesResource(getInjectables());
   }
 
   @Override

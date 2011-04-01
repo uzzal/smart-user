@@ -46,5 +46,9 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.smartitengineering.smart-util.opensearch</groupId>
+            <artifactId>jaxrs</artifactId>
+        </dependency>
     </dependencies>
 </project>
