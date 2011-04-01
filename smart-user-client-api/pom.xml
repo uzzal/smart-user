@@ -30,5 +30,9 @@
       <groupId>com.smartitengineering.smart-util.rest</groupId>
       <artifactId>generic-client</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.smartitengineering.smart-util.opensearch</groupId>
+      <artifactId>api</artifactId>
+    </dependency>
   </dependencies>
 </project>

@@ -10,10 +10,12 @@ import com.smartitengineering.util.rest.client.ResourceLink;
  *
  * @author russel
  */
-public interface RootResource{
+public interface RootResource {
 
   //public OrganizationsResource getOrganizationsResource();
   LoginResource getLoginResource();
 
   ResourceLink getLoginLink();
+
+  UriTemplateResource getTemplateResource();
 }
