@@ -10,6 +10,7 @@ import com.smartitengineering.user.client.api.RolesResource;
 import com.smartitengineering.user.client.api.RootResource;
 import com.smartitengineering.user.client.api.SecuredObjectResource;
 import com.smartitengineering.user.client.api.SecuredObjectsResource;
+import com.smartitengineering.user.client.api.UriTemplateResource;
 import com.smartitengineering.user.client.api.UserGroup;
 import com.smartitengineering.user.client.api.UserGroupPrivilegeResource;
 import com.smartitengineering.user.client.api.UserGroupPrivilegesResource;
@@ -157,10 +158,7 @@ public class ComprehensiveClientTest {
     UserRolesResource userRolesResource = userResource.getRolesResource();
     Assert.assertNotNull(userRolesResource);
     Assert.assertNotNull(userRolesResource.getUserRoleResources());
-    Assert.assertEquals(1, userRolesResource.getUserRoleResources().size());
-    Assert.assertEquals(userRolesResource.getUserRoleResources().get(0).getRoleResource().getRole().getName(), GlobalRole.ROLE_ADMIN.
-        toString());
-
+    Assert.assertEquals(2, userRolesResource.getUserRoleResources().size());
 
   }
 
@@ -244,7 +242,6 @@ public class ComprehensiveClientTest {
 
   }
 
-
   @Test
   public void doTestUpdateOrganization() throws InterruptedException {
     Assert.assertEquals(ORGANIZATION_NUM_AT_BEGINNING + 2, orgsResource.getOrganizationResources().size());
@@ -274,7 +271,6 @@ public class ComprehensiveClientTest {
       }
     }
   }
-  
 
   @Test
   public void doInitialTest() throws InterruptedException {
@@ -331,7 +327,7 @@ public class ComprehensiveClientTest {
     userPerson.setPerson(person);
     userResource = sitelUsersResource.create(userPerson);
     Thread.sleep(1500);
-    sitelUserResource = userResource;    
+    sitelUserResource = userResource;
     Assert.assertEquals(SITEL_ORG_USER_USERNAME, userResource.getUserReloaded().getUser().getUsername());
 
 
@@ -341,8 +337,7 @@ public class ComprehensiveClientTest {
         getOrganization().getUniqueShortName()));
 
 
-  }  
-  
+  }
 
   @Test
   public void doTestCreateAnotherUser() {
@@ -431,10 +426,10 @@ public class ComprehensiveClientTest {
         }
         catch (Exception e) {
           Assert.fail("Exception due to failure of updating particular user information");
-        }        
+        }
       }
     }
-    try {      
+    try {
       sitelUsersResource = sitelOrgResource.getUsersResource();
       Assert.assertNotNull(sitelUsersResource);
       Assert.assertEquals(USER_NUM_AT_BEGINNING + 2, sitelUsersResource.getUserResources().size());
@@ -886,6 +881,16 @@ public class ComprehensiveClientTest {
     verifyAdminPrivilege(modhuRootResource);
   }
 
+  //Test URL Templates
+  @Test
+  public void doTestUrlTemplates() {
+    System.out.println("#############************************URL TEST***********************################");
+    rootResource = login(USERNAME, PASSWORD);
+    UriTemplateResource resource = rootResource.getTemplateResource();
+    OrganizationResource orgResource = resource.getOrganizationForUniqueShortName(SITEL_ORG_SHORT_NAME);
+    Assert.assertNotNull(orgResource);
+  }
+
   @Test
   public void doTestDeleteOrganization() throws InterruptedException {
     rootResource = login(USERNAME, PASSWORD);
@@ -981,6 +986,6 @@ public class ComprehensiveClientTest {
       Assert.fail("Should not throw any exception");
     }
 
-  }  
+  }
   //Test Ended by Uzzal {
 }

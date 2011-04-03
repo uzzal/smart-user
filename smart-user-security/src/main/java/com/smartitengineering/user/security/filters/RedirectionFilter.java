@@ -13,6 +13,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang.StringUtils;
@@ -51,35 +52,39 @@ public class RedirectionFilter implements Filter {
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain fc) throws IOException,
                                                                                                 ServletException {
-    HttpServletResponse httpResponse = (HttpServletResponse) response;
-    HttpServletRequest httpRequest = (HttpServletRequest) request;
+    final HttpServletResponse httpResponse = (HttpServletResponse) response;
+    final HttpServletRequest httpRequest = (HttpServletRequest) request;
 
     final String contextPath = httpRequest.getContextPath();
-    String loginRedirectUrl = new StringBuilder("http://").append(httpRequest.getHeader(HttpHeaders.HOST)).append(StringUtils.
+    final String loginRedirectUrl = new StringBuilder("http://").append(httpRequest.getHeader(HttpHeaders.HOST)).append(StringUtils.
         isBlank(contextPath) ? "/" : contextPath).append(loginUri).toString();
     if (logger.isInfoEnabled()) {
       logger.info("login url " + loginUri);
       logger.info("login url to check for " + loginRedirectUrl);
-    }
-    final GetStatusWrapper wrapper;
-    wrapper = new GetStatusWrapper(httpResponse);
-    fc.doFilter(request, wrapper);
-    final int status = wrapper.getStatus();
-    String requestUrl = getRequestUrl(httpRequest);
-    if (logger.isInfoEnabled()) {
+      String requestUrl = getRequestUrl(httpRequest);
       logger.info("Request url is " + requestUrl);
       logger.info("User Agent " + httpRequest.getHeader(HttpHeaders.USER_AGENT));
-      logger.info("Status " + status);
     }
-    if (wrapper.isRedirectSet()) {
-      String location = wrapper.getLocation();
-      if (location.startsWith(loginRedirectUrl) && !isUserAgentBrowser(httpRequest.getHeader(HttpHeaders.USER_AGENT))) {
-        logger.info("status is 302 and client is not browser");
-        wrapper.setStatus(Status.UNAUTHORIZED.getStatusCode());
-      }
-      else {
-        wrapper.enableSendRedirect();
-      }
+    if (!isUserAgentBrowser(httpRequest.getHeader(HttpHeaders.USER_AGENT))) {
+      final HttpServletResponseWrapper wrapper;
+      wrapper = new HttpServletResponseWrapper(httpResponse) {
+
+        protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+
+        @Override
+        public void sendRedirect(String location) throws IOException {
+          if (location.startsWith(loginRedirectUrl)) {
+            setStatus(Status.UNAUTHORIZED.getStatusCode());
+          }
+          else {
+            super.sendRedirect(location);
+          }
+        }
+      };
+      fc.doFilter(request, wrapper);
+    }
+    else {
+      fc.doFilter(request, response);
     }
   }
 

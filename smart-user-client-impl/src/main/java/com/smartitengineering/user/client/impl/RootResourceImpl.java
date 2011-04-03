@@ -6,6 +6,8 @@ package com.smartitengineering.user.client.impl;
 
 import com.smartitengineering.user.client.api.LoginResource;
 import com.smartitengineering.user.client.api.RootResource;
+import com.smartitengineering.user.client.api.UriTemplateResource;
+import com.smartitengineering.util.opensearch.jaxrs.OpenSearchDescriptorProvider;
 import com.smartitengineering.util.rest.atom.AbstractFeedClientResource;
 import com.smartitengineering.util.rest.client.ApplicationWideClientFactoryImpl;
 import com.smartitengineering.util.rest.client.ConfigProcessor;
@@ -35,6 +37,7 @@ public class RootResourceImpl
     implements RootResource {
 
   public static final String REL_LOGIN = "Login";
+  public static final String REL_TEMPLATES = "templates";
   private final String username, password;
   private final static ThreadLocal<Entry<String, String>> usernamePass = new ThreadLocal<Entry<String, String>>();
   private static final ConnectionConfig SMART_USER_CONNECTION_CONFIG;
@@ -107,6 +110,16 @@ public class RootResourceImpl
     return null;
   }
 
+  @Override
+  public UriTemplateResource getTemplateResource() {
+    try {
+      return new UriTemplateResourceImpl(this, getRelatedResourceUris().getFirst(REL_TEMPLATES));
+    }
+    catch (Exception ex) {
+      throw new RuntimeException(ex);
+    }
+  }
+
   private static class UserConfigProcessor implements ConfigProcessor {
 
     @Override
@@ -115,6 +128,7 @@ public class RootResourceImpl
       clientConfig.getProperties().put(CacheableClientConfigProps.PASSWORD, usernamePass.get().getValue());
       clientConfig.getClasses().add(JacksonJsonProvider.class);
       clientConfig.getClasses().add(FeedProvider.class);
+      clientConfig.getClasses().add(OpenSearchDescriptorProvider.class);
     }
   }
 }
