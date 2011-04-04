@@ -70,13 +70,12 @@ public class UriTemplateResourceImpl extends AbstractClientResource<OpenSearchDe
 
   public ResourceLink getResourceLink(String relValue, String templateString, String templateVal) {
     OpenSearchDescriptor descriptor = getLastReadStateOfEntity();
-    Url urlTemplate = null;
     for (Url url : descriptor.getUrls()) {
       for (Rel rel : url.getRels()) {
         if (relValue.equals(rel.getValue())) {
-          String urlStr = urlTemplate.getTemplate();
+          String urlStr = url.getTemplate();
           urlStr = urlStr.replace(templateString, templateVal);
-          ResourceLink link = ClientUtil.createResourceLink(relValue, URI.create(urlStr), urlTemplate.getType());
+          ResourceLink link = ClientUtil.createResourceLink(relValue, URI.create(urlStr), url.getType());
           return link;
         }
       }
