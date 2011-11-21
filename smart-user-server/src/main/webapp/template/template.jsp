@@ -14,7 +14,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-    <title>aponn for you</title>
+    <title>smart user | a product of Smart IT Engineering Ltd for administrative control</title>
 
     <link rel="Stylesheet" href="<c:url value="/css/style.css" />">
     <link rel="Stylesheet" href="<c:url value="/css/smart-list.css" />">
