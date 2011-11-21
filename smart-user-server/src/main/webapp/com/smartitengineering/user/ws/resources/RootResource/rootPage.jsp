@@ -8,7 +8,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
+  "http://www.w3.org/TR/html4/loose.dtd">
 <c:if test="${param['lang']!=null}">
   <fmt:setLocale scope="session" value="${param['lang']}"/>
 </c:if>
@@ -22,7 +22,7 @@
   </head>
 
   <body>
-    
+
     <%--This is Header portion--%>
 
     <div id="header" class="homepageHeader">
@@ -36,9 +36,9 @@
       <div id="container" class="homepageContainer">
         <%--This is left side or content portion--%>
         <div id="content" class="leftContent">
-<%--                    <div id="signup">
-                      <jsp:include page="signup.jsp"></jsp:include>
-                    </div>--%>
+          <%--                    <div id="signup">
+                                <jsp:include page="signup.jsp"></jsp:include>
+                              </div>--%>
         </div>
         <%--Content portion ends here--%>
 
@@ -47,6 +47,16 @@
           <jsp:include page="login.jsp"></jsp:include>
         </div>
         <%--login or right portion ends here--%>
+        <c:if test="${not empty param.login_error}">
+          <div id="loginErrorMessage" class="loginErrorMessageContainer">
+            <div class="loginErrorMessageInnerContainer">
+              <ul>
+                <li><label class="loginErrorMessage">Your login attempt was not successful, try again.</label></li>
+                <li><label style="font-weight:bold;color:#6E6E6E">Reason&nbsp;:</label>&nbsp;<label class="loginErrorMessage"><c:if test="${not empty SPRING_SECURITY_LAST_EXCEPTION.message}">Incorrect Username or Password!!</c:if></label></li>
+              </ul>
+            </div>
+          </div>
+        </c:if>
       </div>
       <div class="clear"></div>
 
