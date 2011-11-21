@@ -18,7 +18,9 @@
 
     <div class="loginEntrySection">
       <div id="loginlabeldiv" class="loginLabelDiv"><label>Username:</label></div>
-      <div id="loginboxdiv" class="loginTextBoxDiv"><input type="text" name="j_username" value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>' id="loginnametextbox" class="loginTextBox"></div>
+      <div id="loginboxdiv" class="loginTextBoxDiv">
+        <input type="text" name="j_username" value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>' id="loginnametextbox" class="loginTextBox">
+      </div>
       <div class="clear"></div>
       <div id="loginlabeldiv" class="loginLabelDiv"><label>Password:</label></div>
       <div id="loginboxdiv" class="loginTextBoxDiv"><input type="password" name="j_password" id="loginpasstextbox" class="loginTextBox"></div>
@@ -30,7 +32,7 @@
     <div class="btnLinkCheckDiv">
       <div class="btnlinkcheck"><input type="checkbox" name="_spring_security_remember_me"> Keep me signed in</div>
       <div class="btnDiv"><input type="submit" value="Sign In" name="submit" id="loginBtn"></div>
-      <%--<div class="btnlinkcheck"><input type="image" src="more_btn.jpg" name="btnSubmit" id="loginBtn" alt="SUBMIT"></div>--%>
+        <%--<div class="btnlinkcheck"><input type="image" src="more_btn.jpg" name="btnSubmit" id="loginBtn" alt="SUBMIT"></div>--%>
 
       <div class="btnlinkcheck"><a href="#">Can't access your account?</a></div>
     </div>
